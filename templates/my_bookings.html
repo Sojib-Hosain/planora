@@ -1,0 +1,60 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+{% extends 'base.html' %}
+{% block title %}PLANORA | My Bookings{% endblock %}
+{% block content %}
+<main class="container section">
+  <div class="section-head tight">
+    <div>
+      <span class="eyebrow">My records</span>
+      <h1>Past and future bookings</h1>
+    </div>
+  </div>
+
+  <section class="glass table-card">
+    {% if bookings %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Receipt</th>
+            <th>Event</th>
+            <th>Booking date</th>
+            <th>Total</th>
+            <th>Status</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for booking in bookings %}
+          <tr>
+            <td>{{ booking.receipt_code }}</td>
+            <td>{{ booking.event_name }}</td>
+            <td>{{ booking.booking_date }}</td>
+            <td>{{ booking.total_price|money }}</td>
+            <td><span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span></td>
+            <td>
+              {% if booking.status == 'confirmed' %}
+              <form method="post" action="{{ url_for('cancel_booking', booking_id=booking.id) }}" class="inline-form">
+                <button type="submit" class="btn btn-outline small-btn">Cancel</button>
+              </form>
+              {% else %}
+              —
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+      <div class="feature-card empty-state">
+        <h3>No bookings yet</h3>
+        <p>Once you confirm an event booking, it will appear here.</p>
+      </div>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}

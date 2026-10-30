@@ -1,0 +1,79 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}PLANORA{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}" />
+</head>
+<body>
+  <div class="aurora aurora-1"></div>
+  <div class="aurora aurora-2"></div>
+  <div class="aurora aurora-3"></div>
+
+  <header class="site-header glass">
+    <div class="container nav-wrap">
+      <a class="logo" href="{{ url_for('home') }}">PLANORA</a>
+      <nav class="nav-links">
+        <a href="{{ url_for('home') }}">Home</a>
+        <a href="{{ url_for('events') }}">Events</a>
+        {% if current_user %}
+          <a href="{{ url_for('booking') }}">Bookings</a>
+          <a href="{{ url_for('my_bookings') }}">My Bookings</a>
+          {% if current_user.role == 'admin' %}
+            <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+          {% endif %}
+          <a href="{{ url_for('logout') }}" class="btn btn-outline">Logout</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-outline">Login</a>
+        {% endif %}
+      </nav>
+      <button class="menu-toggle" id="menuToggle">☰</button>
+    </div>
+    <div class="mobile-menu glass" id="mobileMenu">
+      <a href="{{ url_for('home') }}">Home</a>
+      <a href="{{ url_for('events') }}">Events</a>
+      {% if current_user %}
+        <a href="{{ url_for('booking') }}">Bookings</a>
+        <a href="{{ url_for('my_bookings') }}">My Bookings</a>
+        {% if current_user.role == 'admin' %}
+          <a href="{{ url_for('admin_dashboard') }}">Admin</a>
+        {% endif %}
+        <a href="{{ url_for('logout') }}">Logout</a>
+      {% else %}
+        <a href="{{ url_for('login') }}">Login</a>
+      {% endif %}
+    </div>
+  </header>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <section class="container flash-stack">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }} glass">{{ message }}</div>
+        {% endfor %}
+      </section>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+  <footer class="site-footer container">
+    <p>PLANORA • Bristol events platform • {{ current_year }}</p>
+  </footer>
+
+  <script>
+    const toggle = document.querySelector('#menuToggle');
+    const menu = document.querySelector('#mobileMenu');
+    if (toggle && menu) {
+      toggle.addEventListener('click', () => menu.classList.toggle('show'));
+    }
+  </script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

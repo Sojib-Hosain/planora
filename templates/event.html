@@ -1,0 +1,44 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+{% extends 'base.html' %}
+{% block title %}PLANORA | {{ event.name }}{% endblock %}
+{% block content %}
+<main class="container section">
+  <div class="detail-shell">
+    <section class="glass detail-content">
+      <span class="pill">{{ event.category_name }}</span>
+      <h1>{{ event.name }}</h1>
+      <p>{{ event.description }}</p>
+      <div class="detail-grid">
+        <div class="meta-box"><span>Start date</span>{{ event.start_date }}</div>
+        <div class="meta-box"><span>End date</span>{{ event.end_date }}</div>
+        <div class="meta-box"><span>Ticket price</span>{{ event.base_price|money }}</div>
+        <div class="meta-box"><span>Last booking date</span>{{ event.last_booking_date }}</div>
+        <div class="meta-box"><span>Venue</span>{{ event.venue_name }}</div>
+        <div class="meta-box"><span>Remaining tickets</span>{{ event.tickets_left }}</div>
+      </div>
+      {% if event_days|length > 1 %}
+      <div class="glass mini-panel">
+        <h3>Multi-day event days</h3>
+        <ul class="feature-list compact">
+          {% for day in event_days %}
+            <li>{{ day.event_date }} — {{ day.day_price|money }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+      {% endif %}
+    </section>
+    <aside class="glass detail-side">
+      <h2>Booking conditions</h2>
+      <p>{{ event.condition_notes }}</p>
+      <p><strong>Venue address:</strong> {{ event.address }}</p>
+      <p><strong>Venue capacity:</strong> {{ event.capacity }}</p>
+      <p><strong>Suitable for:</strong> {{ event.suitable_types }}</p>
+      <p><strong>Waiting list entries:</strong> {{ waitlist_count }}</p>
+      <a class="btn btn-primary" href="{{ url_for('booking', event_id=event.id) }}">Book this event</a>
+    </aside>
+  </div>
+</main>
+{% endblock %}

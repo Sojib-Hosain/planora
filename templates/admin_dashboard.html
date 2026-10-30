@@ -1,0 +1,130 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+{% extends 'base.html' %}
+{% block title %}PLANORA | Admin{% endblock %}
+{% block content %}
+<main class="container section admin-grid">
+  <section class="glass form-card">
+    <span class="eyebrow">Admin dashboard</span>
+    <h1>Add new event</h1>
+    <div class="stats-grid">
+      <div class="meta-box"><span>Active events</span>{{ stats.events }}</div>
+      <div class="meta-box"><span>Confirmed bookings</span>{{ stats.bookings }}</div>
+      <div class="meta-box"><span>Waiting list</span>{{ stats.waiting }}</div>
+      <div class="meta-box"><span>Revenue</span>{{ stats.revenue|money }}</div>
+    </div>
+    <form method="post" action="{{ url_for('admin_add_event') }}" class="form-grid">
+      <label>Event name <input type="text" name="name" required></label>
+      <label>Category
+        <select name="category_id" required>
+          {% for category in categories %}
+            <option value="{{ category.id }}">{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Venue
+        <select name="venue_id" required>
+          {% for venue in venues %}
+            <option value="{{ venue.id }}">{{ venue.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Start date <input type="date" name="start_date" required></label>
+      <label>End date <input type="date" name="end_date"></label>
+      <label>Base price (£) <input type="number" name="base_price" min="0" step="0.01" value="0"></label>
+      <label>Total tickets <input type="number" name="total_tickets" min="1" required></label>
+      <label>Description <textarea name="description" rows="3"></textarea></label>
+      <label>Event Image 
+      <input type="text" name="image_url" placeholder="/static/images/event.jpg">
+      </label>
+      <label>Conditions <textarea name="condition_notes" rows="3"></textarea></label>
+      <label class="checkbox-row"><input type="checkbox" name="is_featured"> Mark as featured</label>
+      <button class="btn btn-primary" type="submit">Add event</button>
+    </form>
+  </section>
+
+  <section class="glass table-card stack-gap">
+    <div>
+      <div class="section-head tight"><h2>Current events</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Name</th><th>Category</th><th>Date</th><th>Venue</th><th>Price</th><th></th></tr></thead>
+          <tbody>
+            {% for event in events %}
+            <tr>
+              <td>{{ event.name }}</td>
+              <td>{{ event.category_name }}</td>
+              <td>{{ event.start_date }}</td>
+              <td>{{ event.venue_name }}</td>
+              <td>{{ event.base_price|money }}</td>
+              <td>
+                <form method="post" action="{{ url_for('admin_delete_event', event_id=event.id) }}" class="inline-form">
+                  <button type="submit" class="btn btn-outline small-btn">Archive</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="section-head tight">
+    <h2>Archived Events</h2>
+</div>
+
+<div class="table-wrap">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for event in archived_events %}
+            <tr>
+                <td>{{ event.name }}</td>
+                <td>
+                    <form method="POST" action="/admin/events/{{ event.id }}/restore">
+                        <button type="submit" class="btn btn-outline small-btn">
+                            Restore
+                        </button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="2">No archived events</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+    <div>
+      <div class="section-head tight"><h2>Recent bookings</h2></div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Receipt</th><th>User</th><th>Event</th><th>Total</th><th>Status</th></tr></thead>
+          <tbody>
+            {% for booking in recent_bookings %}
+            <tr>
+              <td>{{ booking.receipt_code }}</td>
+              <td>{{ booking.full_name }}</td>
+              <td>{{ booking.event_name }}</td>
+              <td>{{ booking.total_price|money }}</td>
+              <td><span class="status-badge status-{{ booking.status }}">{{ booking.status }}</span></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">No bookings yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+{% endblock %}

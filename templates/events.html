@@ -1,0 +1,93 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+{% extends 'base.html' %}
+{% block title %}PLANORA | Events{% endblock %}
+{% block content %}
+<main class="container section">
+  <div class="section-head tight">
+    <div>
+      <span class="eyebrow">Browse events</span>
+      <h1>Discover Bristol experiences</h1>
+    </div>
+  </div>
+
+  <section class="glass filters-panel">
+    <form class="filters-grid" method="get">
+      <label>Search <input type="text" name="q" value="{{ filters.q }}" placeholder="Search event name" /></label>
+      <label>Category
+        <select name="category">
+          <option value="all">All</option>
+          {% for category in categories %}
+            <option value="{{ category.name }}" {% if filters.category == category.name %}selected{% endif %}>{{ category.name }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Price
+        <select name="price">
+          <option value="all" {% if filters.price == 'all' %}selected{% endif %}>All</option>
+          <option value="free" {% if filters.price == 'free' %}selected{% endif %}>Free</option>
+          <option value="paid" {% if filters.price == 'paid' %}selected{% endif %}>Paid</option>
+        </select>
+      </label>
+      <label>Month
+        <select name="month">
+          <option value="all" {% if filters.month == 'all' %}selected{% endif %}>All</option>
+          <option value="2026-04" {% if filters.month == '2026-04' %}selected{% endif %}>April 2026</option>
+          <option value="2026-05" {% if filters.month == '2026-05' %}selected{% endif %}>May 2026</option>
+          <option value="2026-06" {% if filters.month == '2026-06' %}selected{% endif %}>June 2026</option>
+        </select>
+      </label>
+      <button class="btn btn-primary" type="submit">Apply Filters</button>
+    </form>
+  </section>
+
+  <section class="section">
+    <div class="card-grid">
+      {% if events %}
+        {% for event in events %}
+        <article class="event-card">
+          <div class="event-banner">
+           <img src="{{ url_for('static', filename=event.image_url if event.image_url else 'images/default.jpg') }}" alt="{{ event.name }}">
+          </div>
+          <div class="event-body">
+            <span class="pill">{{ event.category_name }}</span>
+            <div>
+              <h3>{{ event.name }}</h3>
+              <p>{{ event.description }}</p>
+            </div>
+            <div class="meta-row">
+              <div class="meta-box"><span>Date</span>{{ event.start_date }}</div>
+              <div class="meta-box"><span>Price</span>{{ event.base_price|money }}</div>
+              <div class="meta-box"><span>Venue</span>{{ event.venue_name }}</div>
+              <div class="meta-box"><span>Tickets left</span>{{ event.tickets_left }}</div>
+            </div>
+            <div class="action-row">
+              <a href="{{ url_for('event_detail', event_id=event.id) }}" class="btn btn-outline">
+                View details
+              </a>
+
+              {% if event.tickets_left > 0 %}
+                <a href="{{ url_for('booking', event_id=event.id) }}" class="btn btn-primary">
+                  Book now
+                </a>
+              {% else %}
+                <button class="btn btn-secondary" disabled>
+                  Sold Out
+                </button>
+              {% endif %}
+            </div>
+          </div>
+        </article>
+        {% endfor %}
+      {% else %}
+        <div class="glass feature-card empty-state">
+          <h3>No events found</h3>
+          <p>Try a different filter combination.</p>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+</main>
+{% endblock %}

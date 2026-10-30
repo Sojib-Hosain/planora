@@ -1,0 +1,124 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+{% extends 'base.html' %}
+{% block title %}PLANORA | Bristol Events{% endblock %}
+{% block content %}
+<main>
+  <section class="hero container">
+    <div class="hero-copy">
+      <span class="eyebrow">Events in Bristol</span>
+      <h1>Plan, browse and book Bristol events with <span>PLANORA</span>.</h1>
+      <p>Explore exhibitions, workshops, live music, theatre and more — all in one place. Find events that match your interests and book your spot in seconds.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="{{ url_for('events') }}">Explore Events</a>
+        {% if current_user %}
+          <a class="btn btn-secondary" href="{{ url_for('booking') }}">Make a Booking</a>
+        {% else %}
+          <a class="btn btn-secondary" href="{{ url_for('register') }}">Create Account</a>
+        {% endif %}
+      </div>
+      <ul class="hero-stats">
+        <li><strong>{{ total_events }}</strong><span>Active events</span></li>
+        <li><strong>10</strong><span>Core venues</span></li>
+        <li><strong>Fast</strong><span>Booking system</span></li>
+      </ul>
+    </div>
+    <div class="hero-panel glass">
+      <h3>Quick Search</h3>
+      <form action="{{ url_for('events') }}" method="get" class="search-stack">
+        <label>
+          Category
+          <select name="category">
+            <option value="all">All categories</option>
+            <option>Exhibition</option>
+            <option>Workshop</option>
+            <option>Sports</option>
+            <option>Musical</option>
+            <option>Religious</option>
+            <option>Theatre</option>
+          </select>
+        </label>
+        <label>
+          Budget
+          <select name="price">
+            <option value="all">Any price</option>
+            <option value="free">Free events</option>
+            <option value="paid">Paid events</option>
+          </select>
+        </label>
+        <label>
+          Month
+          <select name="month">
+            <option value="all">Any month</option>
+            <option value="2026-04">April 2026</option>
+            <option value="2026-05">May 2026</option>
+            <option value="2026-06">June 2026</option>
+          </select>
+        </label>
+        <button class="btn btn-primary" type="submit">Search Events</button>
+      </form>
+    </div>
+  </section>
+
+  <section class="container section" id="featured">
+    <div class="section-head">
+      <div>
+        <span class="eyebrow">Featured now</span>
+        <h2>Upcoming experiences</h2>
+      </div>
+      <a href="{{ url_for('events') }}" class="text-link">See all events →</a>
+    </div>
+    <div class="card-grid">
+      {% for event in featured_events %}
+      <article class="event-card">
+        <div class="event-banner">
+          <img src="{{ url_for('static', filename=event.image_url if event.image_url else 'images/default.jpg') }}" alt="{{ event.name }}">
+        </div>
+        <div class="event-body">
+          <span class="pill">{{ event.category_name }}</span>
+          <div>
+            <h3>{{ event.name }}</h3>
+            <p>{{ event.description }}</p>
+          </div>
+          <div class="meta-row">
+            <div class="meta-box"><span>Date</span>{{ event.start_date }}</div>
+            <div class="meta-box"><span>Price</span>{{ event.base_price|money }}</div>
+            <div class="meta-box"><span>Venue</span>{{ event.venue_name }}</div>
+            <div class="meta-box"><span>Tickets left</span>{{ event.tickets_left }}</div>
+          </div>
+          <a class="btn btn-secondary" href="{{ url_for('event_detail', event_id=event.id) }}">View details</a>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+  <section class="container section two-col">
+    <div class="glass feature-card">
+    
+      <h3>Why choose PLANORA</h3>
+      <ul class="feature-list">
+        <li>Discover events happening across Bristol</li>
+        <li>Quick and easy booking experience</li>
+        <li>Keep track of your bookings in one place</li>
+        <li>Get notified when tickets become available</li>
+        <li>Explore new venues and experiences</li>
+      </ul>
+    </div>
+    <div class="glass feature-card">
+      
+      <h3>Popular categories</h3>
+      <ul class="feature-list">
+        <li>Exhibitions</li>
+        <li>Workshops</li>
+        <li>Sports</li>
+        <li>Musical</li>
+        <li>Religious</li>
+        <li>Theatre</li>
+      </ul>
+    </div>
+  </section>
+</main>
+{% endblock %}

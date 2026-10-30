@@ -1,0 +1,127 @@
+<!--
+Name: MD. SOJIB HOSAIN
+Student ID: 25044586
+-->
+{% extends 'base.html' %}
+{% block title %}PLANORA | Book Tickets{% endblock %}
+{% block content %}
+<main class="container section two-col booking-layout">
+  <section class="glass form-card">
+    <span class="eyebrow">Book your tickets</span>
+    <h1>Create a booking</h1>
+    <form class="form-grid" method="post">
+      <label>Event
+        <select name="event_id" required>
+          <option value="">Select an event</option>
+          {% for event in events %}
+            <option value="{{ event.id }}" {% if selected_event and selected_event.id == event.id %}selected{% endif %}>{{ event.name }} — {{ event.start_date }}</option>
+          {% endfor %}
+        </select>
+      </label>
+      <label>Tickets
+        <input type="number" name="quantity" min="1" max="10" value="1" required>
+      </label>
+      <label>Booking date
+        <input type="date" name="booking_date" value="{{ today }}" required>
+      </label>
+      <label class="checkbox-row">
+        <input type="checkbox" name="is_student"> Apply 10% student discount
+      </label>
+
+      <div class="payment-card">
+        <h3>Payment Details</h3>
+
+        <div class="input-group">
+          <label>Card Number</label>
+          <input type="text" name="card_number" placeholder="1234 5678 9012 3456" required>
+        </div>
+
+        <div class="row">
+          <div class="input-group">
+            <label>Expiry</label>
+            <input type="text" name="expiry" placeholder="MM/YY" required>
+          </div>
+
+          <div class="input-group">
+            <label>CVV</label>
+            <input type="password" name="cvv" placeholder="123" required>
+          </div>
+        </div>
+      </div>
+      <button class="btn btn-primary" type="submit">Pay & Confirm Booking</button>
+    </form>
+    <p class="auth-meta">You must be logged in to book. If tickets are unavailable, the system adds you to the waiting list automatically.</p>
+  </section>
+
+ <aside class="glass receipt-card ticket-card">
+
+  {% if selected_event and receipt %}
+  
+  <div class="ticket-header">
+    <h2>{{ selected_event.name }}</h2>
+    <span class="ticket-badge">CONFIRMED</span>
+  </div>
+
+  <div class="ticket-body">
+
+    <div class="ticket-row">
+      <span>Venue</span>
+      <strong>{{ selected_event.venue_name }}</strong>
+    </div>
+
+    <div class="ticket-row">
+      <span>Date</span>
+      <strong>{{ selected_event.start_date }}</strong>
+    </div>
+
+    <div class="ticket-row">
+      <span>Tickets</span>
+      <strong>{{ receipt.quantity }}</strong>
+    </div>
+
+    <div class="ticket-divider"></div>
+
+    <div class="ticket-row">
+      <span>Subtotal</span>
+      <strong>{{ receipt.subtotal | money }}</strong>
+    </div>
+
+    <div class="ticket-row">
+      <span>Advance discount</span>
+      <strong>- {{ receipt.advance_discount | money }}</strong>
+    </div>
+
+    <div class="ticket-row">
+      <span>Student discount</span>
+      <strong>- {{ receipt.student_discount | money }}</strong>
+    </div>
+
+    <div class="ticket-row total">
+      <span>Total</span>
+      <strong>{{ receipt.total | money }}</strong>
+    </div>
+
+  </div>
+
+  <div class="ticket-footer">
+    <p>Show this ticket at entry</p>
+    <small>Booking successful</small>
+  </div>
+
+  {% if booking_id %}
+  <div class="ticket-actions">
+    <a class="btn btn-primary ticket-download-btn"
+       href="{{ url_for('download_receipt', booking_id=booking_id) }}">
+      Download receipt
+    </a>
+  </div>
+  {% endif %}
+
+  {% else %}
+    <h2>Receipt preview</h2>
+    <p>Select an event to generate your ticket.</p>
+  {% endif %}
+
+</aside>
+</main>
+{% endblock %}
